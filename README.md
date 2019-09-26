@@ -34,8 +34,11 @@ To debug a script, no need to use xdebug, just use the default vscode script con
 
 # Documentation
 
-## Generate the HTML doc
+## Install phpDocumentor on Windows
 
 * download the phpdoc.phar from the [phpDocumentor website](https://www.phpdoc.org/) and add it to your PATH
 * create in the same folder as phpdoc.phar, a phpdoc.cmd with this line : `@php "%~dp0phpdoc.phar" %* `)
+
+## Generate the HTML doc
+
 * cd in the project and run `phpdoc.cmd -d ./src -t ./docs`
