@@ -1,0 +1,17 @@
+{
+    "name": "ccn/php-gists",
+    "version": "0.0.1",
+    "description": "Set of php functions and tools to help with CCN projects",
+    "type": "library",
+    "license": "GPL3",
+    "authors": [
+        {
+            "name": "Carlo Baugé",
+            "email": "shaqed@outlook.fr"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "8.3.*"
+    }
+}
