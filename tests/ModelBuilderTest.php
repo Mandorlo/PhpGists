@@ -1,6 +1,6 @@
 <?php
-
-use PHPUnit\Framework\TestCase;
+namespace ccn;
+use \PHPUnit\Framework\TestCase;
 require_once(dirname(__FILE__) . '/../src/ModelBuilder.php');
 
 class ModelBuilderTest extends TestCase {

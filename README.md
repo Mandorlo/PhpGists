@@ -1,11 +1,12 @@
 # PhpGists
 
-This is a set of PHP functions and tools to help build my PHP projects
+This is a set of PHP functions and tools to help build my PHP projects.
 
 # run a phpunit test
 
-you can install phpunit globally with `composer global require phpunit`.
-once it's installed, run sthg like : `phpunit .\tests\ArrayTest.php`
+You can install phpunit globally with `composer global require phpunit`.
+
+Once it's installed, run something like : `phpunit .\tests\ArrayTest.php` to run the ArrayTest tests for example.
 
 # Configure debugging with vscode and xdebug
 
@@ -27,7 +28,7 @@ To debug something with xdebug (typically a phpunit test):
 * place a breakpoint somewhere
 * run the xdebug listener in vscode
 * run the command you want like `phpunit .\tests\ArrayTest.php`
-* if you want to run only some functions, in the test file, add a `--filter pattern` argument in phpunit command line
+* if you want to run only some functions, in the test file, add a `--filter pattern` argument in the phpunit command line
 
 To debug a script, no need to use xdebug, just use the default vscode script config
 

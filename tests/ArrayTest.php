@@ -1,8 +1,8 @@
 <?php
 // cf manual https://phpunit.readthedocs.io/fr/latest/writing-tests-for-phpunit.html
-
-use PHPUnit\Framework\TestCase;
-require_once(dirname(__FILE__) . '/../src/Array.php');
+namespace ccn;
+use \PHPUnit\Framework\TestCase;
+require_once(__DIR__ . '/../src/Array.php');
 
 class ArrayTest extends TestCase {
     
