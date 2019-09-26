@@ -9,6 +9,7 @@ namespace ccn;
  * The root log dir has several subfolders, corresponding to different channels, the main one is called "APP"
  * Logs are stored in files named log-2019-04.txt, so one for each month
  * Log files are deleted by default after 6 months, you can change this with $this->set_max_age([max number of months])
+ * TODO : log in a database
  */
 class Logger {
 
@@ -19,6 +20,11 @@ class Logger {
         'max_file_age' => '6', // in months. deleted all files older than max_file_age days
     ];
 
+    /**
+     * @param string $dir   the log directory path
+     * @param array $opt    logging options like ['max_file_age' => 30, 'max_file_size' => 300]
+     *                      max_file_age is in months and max_file_size is a TODO :)
+     */
     function __construct($dir = '', $opt = []) {
         if (!empty($dir)) $this->params['dir'] = $dir;
         else $this->params['dir'] = __dir__.'/log';
@@ -26,39 +32,40 @@ class Logger {
         if (!empty($opt['max_file_size'])) $this->params['max_file_size'] = $opt['max_file_size'];
     }
 
+    /**
+     * @return string the log directory
+     */
     public function get_dir() {
-        /**
-         * Returns the log directory
-         */
         return $this->params['dir'];
     }
     
-    public function get_params() {
-        /**
-         * Returns the log parameters
-         */
-    
+    /**
+     * @return array the log parameters ['dir' => the_log_dir_path]
+     */
+    public function get_params() {    
         return $this->params;
     }
 
+    /**
+     * Sets the maximum age of a log file (file will be deleted after this age)
+     * @param int $nb_months the maximum number of months we should keep a log file
+     * @return void
+     */
     public function set_max_age($nb_months) {
-        /**
-         * Sets the maximum age of a log file (file will be deleted after this age)
-         */
         if (gettype($nb_months) != 'integer') return false;
         $this->params['max_file_age'] = $nb_months;
     }
     
+     /**
+     * Writes a log in the log file
+     * 
+     * @param string level      Le niveau de log (INFO, WARNING, ERROR). N.B: le niveau INFO est loggé dans un sous-dossier INFO
+     * @param string title      un titre pour cette entrée (ça peut être par ex un identifiant de l'erreur)
+     * @param string data       soit une string soit un élément qui sera écrit comme json_encode(data)
+     * @param string channel    cela va créer un sous-dossier avec le nom du channel dans le dossier de logs
+     * 
+     */
     public function write($level, $title, $data, $channel = "") {
-        /**
-         * Writes a log in the log file
-         * 
-         * @param string level      Le niveau de log (INFO, WARNING, ERROR). N.B: le niveau INFO est loggé dans un sous-dossier INFO
-         * @param string title      un titre pour cette entrée (ça peut être par ex un identifiant de l'erreur)
-         * @param string data       soit une string soit un élément qui sera écrit comme json_encode(data)
-         * @param string channel    cela va créer un sous-dossier avec le nom du channel dans le dossier de logs
-         * 
-         */
     
         // on clean les logs
         $this->clean_old_logs();
@@ -106,17 +113,47 @@ class Logger {
         return $b;
     }
     
+    /**
+     * Writes an error level log
+     * 
+     * @param string $title the log title
+     * @param string $data the log data
+     * @param string $channel the log channel
+     * @param any $return_value the value to be returned (can be useful for one-liners)
+     * 
+     * @return any $return_value
+     */
     public function error($title = "", $data = "", $channel = "", $return_value = false) {
         // $return_value permet de renvoyer $return_value :)
         $this->write('ERROR', $title, $data, $channel);
         return $return_value;
     }
     
+    /**
+     * Writes a warning level log
+     * 
+     * @param string $title the log title
+     * @param string $data the log data
+     * @param string $channel the log channel
+     * @param any $return_value the value to be returned (can be useful for one-liners)
+     * 
+     * @return any $return_value
+     */
     public function warning($title = "", $data = "", $channel = "", $return_value = false) {
         $this->write('WARNING', $title, $data, $channel);
         return $return_value;
     }
     
+    /**
+     * Writes an info level log
+     * 
+     * @param string $title the log title
+     * @param string $data the log data
+     * @param string $channel the log channel
+     * @param any $return_value the value to be returned (can be useful for one-liners)
+     * 
+     * @return any $return_value
+     */
     public function info($title = "", $data = "", $channel = "", $return_value = false) {
         $this->write('INFO', $title, $data, $channel);
         return $return_value;
@@ -126,11 +163,10 @@ class Logger {
     //                  LOG CLEANING
     // ================================================================
     
-    private function clean_old_logs() {
-        /**
-         * Deletes all logs that are too old
-         */
-    
+    /**
+     * Deletes all logs that are too old
+     */
+    private function clean_old_logs() {    
         $log_dir = $this->get_dir();
         $max_file_age = $this->params['max_file_age']; // in months
         $interval = date_interval_create_from_date_string(-$max_file_age.' months');
@@ -154,16 +190,16 @@ class Logger {
     //                  HELPER FUNCTIONS
     // ================================================================
     
+    /**
+     * Applies function $fun to all files and dirs in $dir (recusively or not)
+     * Returns the list of {path => [value returned by $fun(path)]}
+     * 
+     * @param string $dir       the directory path
+     * @param callable $fun     fonction($full_path, $file_name, $meta_info) to apply to all files and dirs
+     *                          $meta_info is an array with info on the file returned by get_file_meta_info()
+     * 
+     */
     private function dir_map_fun($dir, $fun, $recursive = true){
-        /**
-         * Applies function $fun to all files and dirs in $dir (recusively or not)
-         * Returns the list of {path => [value returned by $fun(path)]}
-         * 
-         * @param string $dir       the directory path
-         * @param callable $fun     fonction($full_path, $file_name, $meta_info) to apply to all files and dirs
-         *                          $meta_info is an array with info on the file returned by get_file_meta_info()
-         * 
-         */
     
         $results = array();
         $files = scandir($dir);
