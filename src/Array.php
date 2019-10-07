@@ -2,6 +2,71 @@
 namespace ccn;
 
 /**
+ * Equivalent of array merge but fixes a bad behavior when dealing with integer keys
+ * example : array_merge(['1'=>'a','2'=>'b'], ['2'=>'c','3'=>'d','4'=>'e']) = ['a','b','c','d','e']
+ * but array_assign(['1'=>'a','2'=>'b'], ['2'=>'c','3'=>'d','4'=>'e']) = ['1'=>'a', '2'=>'c', '3'=>'d', '4'=>'e']
+ * 
+ * @param array $arr1 
+ * @param array $arr2
+ * 
+ * @return array merge of $arr1 and $arr2 (keys in $arr2 overwrite keys in $arr1)
+ */
+function array_assign($arr1, $arr2) {
+    foreach ($arr2 as $k => $v) {
+        $arr1[(string)$k] = $v;
+    }
+    return $arr1;
+}
+
+/**
+ * Builds an associative Array from keys and values
+ * 
+ * If there are more keys than values, the additional keys are mapped to the null value
+ * 
+ * @param array|any $keys the list of keys (string). If this is not an array, this is converted into an array
+ * @param array|any $values the list of values (any type). If this is not an array, this is converted into an array
+ * 
+ * @return array the associative array built from keys and values
+ */
+function array_build($keys, $values) {
+
+    if (!is_array($keys)) $keys = [$keys];
+    if (!is_array($values)) $values = [$values];
+
+    $arr = array();
+    for ($i = 0; $i < count($keys); $i++) {
+        //if (gettype($keys[$i]) != 'string') $keys[$i] = (string) $keys[$i];
+        $arr[(string)$keys[$i]] = ($i < count($values)) ? $values[$i] : null;
+    }
+    return $arr;
+}
+
+/**
+ * Tells if array has at least one string key
+ * 
+ * @param array $arr an array
+ 
+ * @return bool true if $arr has ata least one string key
+ */
+function array_has_string_key($arr) {
+
+    if (!is_array($arr)) return false;
+    return count(array_filter(array_keys($arr), 'is_string')) > 0;
+}
+
+/**
+ * @return the first element in $arr that is not falsy
+ * @return $default if all elements are falsy
+ */
+function first_not_falsy($arr, $default = false) {
+    foreach ($arr as $k => $v) {
+        if ($v) return $v;
+    }
+    return $default;
+}
+
+
+/**
  * Retrieves the element in $obj (associative array) following the path
  * 
  * @param array $obj the source array
@@ -20,7 +85,7 @@ namespace ccn;
  * 
  * example 2 :
  * $obj     = {'a': {'b':1, 'c':{'e':5, 'f':6}, 'd': 4}}
- * $path    = "/a/b/c@keys"
+ * $path    = "/a/c@keys"
  * returns  = ['e', 'f']
  * 
  */
@@ -78,5 +143,53 @@ function get_obj_path($obj, $path, $delim = '/', $return_value_if_wrong = false)
         return $return_value_if_wrong;
     }
 }
+
+/**
+ * implodes/joins an associative array in a string
+ * 
+ * @param array $arr the array to implode
+ * @param string $glue_keyval (optional default to '=') the glue to glue key, value pairs
+ * @param string $glue_elements (optional defautl ot ',') the glue to glue the different elements
+ * 
+ * @return string the imploded array
+ * 
+ * example :
+ * $arr = [a:1, b:2, c:'coco']
+ * return -> "a=1,b=2,c=coco"
+ */
+function implode_assoc($arr, $glue_keyval = '=', $glue_elements = ',') {
+
+    $new_arr = array();
+    foreach ($arr as $key => $val) {
+        if (gettype($val) != 'string') $val = json_encode($val);
+        $new_arr[] = $key . $glue_keyval . $val;
+    }
+    return implode($glue_elements, $new_arr);
+}
+
+/**
+ * Reverse keys and values from the mapper (almost equivalent of array_flip)
+ * 
+ * Special case :
+ * $m = {a: [1, 2], b: [3, 4], c: 5}
+ * RETURNS --> {1: 'a', 2: 'a', 3: 'b', 4: 'b', 5: 'c'}
+ * 
+ * @param array $m the assoc array (called mapper here)
+ * @return array the assoc array which $m where keys and values have been exchanged
+ */
+function mapper_reverse($m) {
+
+    $rev_m = array();
+    foreach ($m as $key => $val) {
+        if (is_array($val)) {
+            $new_arr = array_build($val, array_fill(0, count($val), $key));
+            $rev_m = (count($rev_m) > 0) ? array_assign($rev_m, $new_arr) : $new_arr;
+        } else if (gettype($val) == 'string' || gettype($val) == 'integer') {
+            $rev_m[$val] = $key;
+        }
+    }
+    return $rev_m;
+}
+
 
 ?>

@@ -230,6 +230,9 @@ class Logger {
         return $results;
     }
     
+    /**
+     * @return array the file meta info
+     */
     private function get_file_meta_info($path) {
         return array(
             'is_dir' => is_dir($path),
@@ -241,11 +244,11 @@ class Logger {
         );
     }
     
-    // crée tous les dossiers nécessaires pour que le chemin vers le dossier $dir existe
+    /**
+     * crée tous les dossiers nécessaires pour que le chemin vers le dossier $dir existe
+     * TODO NE MARCHE PAS !!!!
+     */
     private function file_force_contents($dir, $contents){
-        /**
-         * TODO NE MARCHE PAS !!!!
-         */
         $parts = explode('/', $dir);
         $file = array_pop($parts);
         $dir = '';

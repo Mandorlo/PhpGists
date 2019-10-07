@@ -2,6 +2,86 @@
 namespace ccn;
 
 /**
+ * Like array_filter but applies to files/dirs in $dir
+ * 
+ * @param string $dir the directory pathy
+ * @param function $fun the filter of the form function(path) => bool
+ * 
+ * @return array list of dicts of the form {path:string; name:string; value:any} that represent the filtered files/dirs
+ * 
+ */
+function dir_filter_fun($dir, $fun, $recursive = true){
+
+    if (strpos($dir, '/') !== false) $dir = str_replace("\\", "/", $dir);
+    $res = dir_map_fun($dir, $fun, $recursive);
+    return array_filter($res, function($el) {
+        return $el['value'];
+    });
+}
+
+/**
+ * Applies function $fun to all files and dirs in $dir (recusively or not)
+ * Returns the list of {path => [value returned by $fun(path)]}
+ * 
+ * @param string $dir       the directory path
+ * @param callable $fun     fonction($full_path, $file_name, $meta_info) to apply to all files and dirs
+ *                          $meta_info is an array with info on the file returned by get_file_meta_info()
+ * 
+ * @return array            list of dicts of the form {path:string; name:string; value:any} 
+ *                          value key contains the result of fn(path)
+ * 
+ */
+function dir_map_fun($dir, $fun, $recursive = true){
+
+    $results = array();
+    $files = scandir($dir);
+    if ($files === false) return false;
+
+    foreach ($files as $key => $value){
+        $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+
+        if(!is_dir($path)){
+            $info = file_meta_info($path);
+            $results[] = array(
+                'path' => $path,
+                'name' => $value,
+                'value' => $fun($path, $value, $info)
+            );
+
+        } else if($value != "." && $value != "..") {
+            $info = $this->get_file_meta_info($path);
+            $results[] = array(
+                'path' => $path,
+                'name' => $value,
+                'value' => $fun($path, $value, $info),
+            );
+            if ($recursive) $results = array_merge($results, $this->dir_map_fun($path, $fun, true));
+        }
+    }
+
+    return $results;
+}
+
+/**
+ * Returns some metadata on a file
+ * 
+ * @param string $path the path to a file
+ * 
+ * @return array the file meta info or ['error' => True] if file does not exist
+ */
+function file_meta_info($path) {
+    if (!file_exists($path)) return ['error' => True];
+    return array(
+        'is_dir' => is_dir($path),
+        'last_modification_date' => filemtime($path), // use date('Y-m', $meta_info['last_modification_date']); to format the way you want
+        'type' => filetype($path),
+        'size' => filesize($path), // in bytes/octets
+        'owner' => fileowner($path),
+        'perms' => fileperms($path), // returns an int - http://php.net/manual/fr/function.fileperms.php
+    );
+}
+
+/**
  * Loads a json as associative array
  * from either a file or a http url
  * 
@@ -56,5 +136,30 @@ function load_json($path_or_url, $options = []) {
     return $data;
 }
 
+/**
+ * Transforms a full path into a relative one, relative to $mask_path
+ * 
+ * @param string $mask_path
+ * @param string $full_path
+ * 
+ * @return string the path relative to $mask_path, extracted from $full_path
+ */
+function path_full_to_relative($mask_path, $full_path) {
+
+    $dir_sep = "/";
+    $other_dir_sep = "\\";
+    if (strpos($full_path, "\\") !== false) {
+        $dir_sep = "\\";
+        $other_dir_sep = "/";
+    }
+    
+    $mask_path = str_replace($other_dir_sep, $dir_sep, $mask_path);
+    if (substr($mask_path, -1) != $dir_sep) $mask_path .= $dir_sep;
+    $full_path = str_replace($other_dir_sep, $dir_sep, $full_path);
+
+    $ind = strpos($full_path, $mask_path);
+    if ($ind === 0) return substr($full_path, strlen($mask_path));
+    return $full_path;
+}
 
 ?>

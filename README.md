@@ -21,16 +21,30 @@ xdebug.remote_autostart = 1
 xdebug.remote_port=9900
 xdebug.remote_log=[choose an absolute path to xdebug.log]
 ```
+
+To debug a script, no need to use xdebug, just use the default vscode script config
+
+## On Linux
+
+* `sudo apt-get install php-xdebug`
+* add the following lines in /etc/php/7.x/mods-available/xdebug.ini
+```
+xdebug.show_error_trace = 1
+xdebug.remote_enable=1
+xdebug.remote_autostart = 1
+```
+* `sudo service apache2 restart`
+
+## How to use XDebug
+
 * check that xdebug is ok by running `php -i | grep xdebug`
 * in vscode configure xdebug on port 9900 (the one you put in php.ini)
 
 To debug something with xdebug (typically a phpunit test):
 * place a breakpoint somewhere
 * run the xdebug listener in vscode
-* run the command you want like `phpunit .\tests\ArrayTest.php`
+* run the command you want like `phpunit ./tests/ArrayTest.php`
 * if you want to run only some functions, in the test file, add a `--filter pattern` argument in the phpunit command line
-
-To debug a script, no need to use xdebug, just use the default vscode script config
 
 # Documentation
 
@@ -42,3 +56,9 @@ To debug a script, no need to use xdebug, just use the default vscode script con
 ## Generate the HTML doc
 
 * cd in the project and run `phpdoc.cmd -d ./src -t ./docs`
+
+# Tools
+
+There are some useful tools to help developping this module for example :
+
+* `php ./tools/main.php create_test Array` to create a new test file to test the functions in file 'Array.php'
