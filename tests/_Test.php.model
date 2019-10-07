@@ -1,0 +1,23 @@
+<?php
+// cf manual https://phpunit.readthedocs.io/fr/latest/writing-tests-for-phpunit.html
+
+namespace ccn;
+use PHPUnit\Framework\TestCase;
+require_once(dirname(__FILE__) . '/../src/__MODULE__.php');
+
+class __MODULE__Test extends TestCase {
+
+    //#TEST-FUN
+    /**
+     * @dataProvider init___FUN__
+     */
+    function test___FUN__($str, $encoding, $expected) {
+        $this->assertSame(remove_accents( $str, $encoding ), $expected);
+    }
+    function init___FUN__() {
+        return [];
+    }
+    //#END-TEST-FUN
+}
+
+?>
