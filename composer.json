@@ -1,15 +1,19 @@
 {
-    "name": "ccn/php-gists",
-    "version": "0.0.1",
+    "name": "sqd/php-gists",
+    "version": "1.0.0",
     "description": "Set of php functions and tools to help with CCN projects",
     "type": "library",
     "license": "GPL3",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Carlo Baugé",
             "email": "shaqed@outlook.fr"
         }
     ],
+    "autoload": {
+        "psr-4": {"ccn\\": "src/"}
+    },
     "require": {},
     "require-dev": {
         "phpunit/phpunit": "8.3.*"

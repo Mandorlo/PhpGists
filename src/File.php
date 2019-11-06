@@ -1,5 +1,5 @@
 <?php
-namespace ccn;
+namespace sqd;
 
 /**
  * Like array_filter but applies to files/dirs in $dir

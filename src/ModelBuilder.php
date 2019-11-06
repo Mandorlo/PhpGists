@@ -1,5 +1,5 @@
 <?php
-namespace ccn;
+namespace sqd;
 
 require_once('Array.php');
 require_once('String2Array.php');

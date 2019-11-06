@@ -1,4 +1,5 @@
 <?php
+namespace sqd;
 
 /**
  * Removes accents and special chars from a string.

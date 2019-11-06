@@ -1,5 +1,5 @@
 <?php
-namespace ccn;
+namespace sqd;
 
 /**
  * Equivalent of array merge but fixes a bad behavior when dealing with integer keys

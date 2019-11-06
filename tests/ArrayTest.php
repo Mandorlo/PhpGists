@@ -1,6 +1,6 @@
 <?php
 // cf manual https://phpunit.readthedocs.io/fr/latest/writing-tests-for-phpunit.html
-namespace ccn;
+namespace sqd;
 use \PHPUnit\Framework\TestCase;
 require_once(__DIR__ . '/../src/Array.php');
 

@@ -1,5 +1,5 @@
 <?php
-namespace ccn;
+namespace sqd;
 
 use Exception;
 

@@ -1,4 +1,5 @@
 <?php
+namespace sqd;
 
 require_once(__dir__."/String.php");
 

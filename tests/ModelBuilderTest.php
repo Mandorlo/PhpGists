@@ -1,5 +1,5 @@
 <?php
-namespace ccn;
+namespace sqd;
 use \PHPUnit\Framework\TestCase;
 require_once(dirname(__FILE__) . '/../src/ModelBuilder.php');
 
