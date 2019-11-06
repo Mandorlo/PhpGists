@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Set of php functions and tools to help with CCN projects",
     "type": "library",
-    "license": "GPLv3",
+    "license": "GPL-3.0-or-later",
     "minimum-stability": "stable",
     "authors": [
         {
