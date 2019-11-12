@@ -12,7 +12,7 @@
         }
     ],
     "autoload": {
-        "psr-4": {"ccn\\": "src/"}
+        "psr-4": {"sqd\\": "src/"}
     },
     "require": {},
     "require-dev": {
